@@ -1,5 +1,6 @@
 package inc.sebek.securityservice;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +12,7 @@ public class SecurityServiceApplicationTests {
 
     @Test
     public void contextLoads() {
-        assert true;
+        Assert.assertTrue(true);
     }
 
 }
