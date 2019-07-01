@@ -11,6 +11,7 @@ public class SecurityServiceApplicationTests {
 
     @Test
     public void contextLoads() {
+        assert true;
     }
 
 }

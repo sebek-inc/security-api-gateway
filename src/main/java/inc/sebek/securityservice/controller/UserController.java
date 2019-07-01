@@ -16,7 +16,7 @@ public class UserController {
     public UserController(UserServiceImpl userService) {this.userService = userService;}
 
     @PostMapping("/create")
-    Mono<User> createUser(@RequestBody User user) {
+    public Mono<User> createUser(@RequestBody User user) {
         return userService.saveUser(user);
     }
 }
