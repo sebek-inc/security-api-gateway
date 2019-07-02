@@ -36,7 +36,6 @@ public class SecurityConfiguration {
                    .securityContextRepository(securityContextRepository)
                    .authorizeExchange()
                    .pathMatchers(HttpMethod.OPTIONS).permitAll()
-                   .pathMatchers("/resource/user").authenticated()
                    .pathMatchers("/login").permitAll()
                    .pathMatchers("/create").permitAll()
                    .anyExchange().authenticated()

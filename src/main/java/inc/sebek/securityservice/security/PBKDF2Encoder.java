@@ -9,6 +9,8 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.util.Base64;
 
+import static org.springframework.security.crypto.password.Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA512;
+
 @Component
 public class PBKDF2Encoder implements PasswordEncoder {
     @Value("${spring.password.encoder.secret}")
@@ -23,7 +25,7 @@ public class PBKDF2Encoder implements PasswordEncoder {
     @SneakyThrows
     @Override
     public String encode(CharSequence rawPassword) {
-        var encodedPassword = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512")
+        var encodedPassword = SecretKeyFactory.getInstance(PBKDF2WithHmacSHA512.name())
                                               .generateSecret(new PBEKeySpec(rawPassword.toString().toCharArray(),
                                                                              secret.getBytes(), iteration, keylength))
                                               .getEncoded();

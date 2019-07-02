@@ -13,6 +13,7 @@ import static java.util.Objects.nonNull;
 
 @Configuration
 public class SecurityContextRepository implements ServerSecurityContextRepository {
+    private static final String BEARER_PREFIX = "Bearer ";
     private AuthenticationManager authenticationManager;
 
     public SecurityContextRepository(final AuthenticationManager authenticationManager) {
@@ -28,7 +29,7 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
     @Override
     public Mono<SecurityContext> load(ServerWebExchange swe) {
         var authHeader = swe.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        if (nonNull(authHeader) && authHeader.startsWith("Bearer ")) {
+        if (nonNull(authHeader) && authHeader.startsWith(BEARER_PREFIX)) {
             var authToken = authHeader.substring(7);
             var auth = new UsernamePasswordAuthenticationToken(authToken, authToken);
             return this.authenticationManager.authenticate(auth).map(SecurityContextImpl::new);

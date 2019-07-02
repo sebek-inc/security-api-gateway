@@ -16,6 +16,7 @@ import java.util.Map;
 @Component
 public class JWTUtil implements Serializable {
     private static final long serialVersionUID = 1L;
+    public static final String ROLE = "role";
 
     @Value("${jwt.jjwt.secret}")
     private String secret;
@@ -38,14 +39,14 @@ public class JWTUtil implements Serializable {
         return getAllClaimsFromToken(token).getExpiration();
     }
 
-    private Boolean isTokenExpired(String token) {
+    public Boolean isTokenExpired(String token) {
         final var expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }
 
     public String generateToken(User user) {
         var claims = new HashMap<String,Object>();
-        claims.put("role", user.getRoles());
+        claims.put(ROLE, user.getRoles());
         return doGenerateToken(claims, user.getUsername());
     }
 
@@ -62,9 +63,4 @@ public class JWTUtil implements Serializable {
                              Base64.getEncoder().encodeToString(secret.getBytes()))// TODO REMOVE DEPRECATED CALL
                    .compact();
     }
-
-    public Boolean validateToken(String token) {
-        return !isTokenExpired(token);
-    }
-
 }

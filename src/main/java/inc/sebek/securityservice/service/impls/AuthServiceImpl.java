@@ -23,13 +23,8 @@ public class AuthServiceImpl implements AuthService {
 
     public Mono<String> getTokenForUser(String username, String password) {
         return userService.findByUsername(username)
-                          .filter(user -> isPasswordCorrect(password, user.getPassword()))
+                          .filter(user -> passwordEncoder.matches(password,user.getPassword()))
                           .map(user -> jwtUtil.generateToken(user));
 
     }
-
-    private boolean isPasswordCorrect(String rawPassword, String encodedPassword) {
-        return passwordEncoder.encode(rawPassword).equals(encodedPassword);
-    }
-
 }

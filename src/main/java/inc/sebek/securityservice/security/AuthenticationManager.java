@@ -5,12 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 
-import static java.util.Objects.nonNull;
+import static inc.sebek.securityservice.security.JWTUtil.ROLE;
+import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
@@ -29,19 +31,17 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
         } catch (Exception e) {
             log.warn("Issue with parsing of username. Reason: ", e);
         }
-        if (nonNull(username) && jwtUtil.validateToken(authToken)) {
-            var roles = jwtUtil.getAllClaimsFromToken(authToken)
-                               .get("role", getListOfStringsClass())
-                               .stream()
-                               .map(Roles::valueOf)
-                               .collect(toList());
-            var auth = new UsernamePasswordAuthenticationToken(username, null, roles.stream()
-                                                                                    .map(Roles::mapToGrantedAuthority)
-                                                                                    .collect(toList()));
-            return Mono.just(auth);
-        } else {
+        if (isNull(username) || jwtUtil.isTokenExpired(authToken)) {
             return Mono.empty();
         }
+        var roles = jwtUtil.getAllClaimsFromToken(authToken)
+                           .get(ROLE, getListOfStringsClass())
+                           .stream()
+                           .filter(Roles::contains)
+                           .map(SimpleGrantedAuthority::new)
+                           .collect(toList());
+        var auth = new UsernamePasswordAuthenticationToken(username, null, roles);
+        return Mono.just(auth);
     }
 
     private Class<ArrayList<String>> getListOfStringsClass() {
