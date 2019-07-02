@@ -7,5 +7,9 @@ assignees: ''
 
 ---
 
+**Describe the feature**
+A clear and concise description of what the feature is.
+
 **Definition Of Done**
-(Describe list of items that need to be done)
+Describe list of items that need to be done
+
